@@ -1,8 +1,7 @@
-use std::collections::HashMap;
+pub mod ui;
 
 use anyhow::{bail, Result};
 use jsonwebtoken::DecodingKey;
-use serde::{Deserialize, Serialize};
 use serde_json::Map;
 
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
@@ -123,7 +122,7 @@ impl JwtEncoderDecoder {
         let token = jsonwebtoken::encode(
             &jsonwebtoken::Header::new(self.algorithm.clone().into()),
             &serde_json::from_str::<serde_json::Value>(&self.decoded)?,
-            &jsonwebtoken::EncodingKey::from_rsa_pem(self.private_key.as_bytes())?,
+            &jsonwebtoken::EncodingKey::from_rsa_pem(self.private_key.trim().as_bytes())?,
         )?;
 
         Ok(token)
@@ -139,7 +138,7 @@ impl JwtEncoderDecoder {
 
         match jsonwebtoken::decode::<Map<_, _>>(
             &self.encoded,
-            &jsonwebtoken::DecodingKey::from_secret(self.secret.as_bytes()),
+            &jsonwebtoken::DecodingKey::from_secret(self.secret.trim().as_bytes()),
             &validation,
         ) {
             Ok(_) => {
@@ -161,14 +160,14 @@ impl JwtEncoderDecoder {
         let mut validation = jsonwebtoken::Validation::new(self.algorithm.clone().into());
         validation.required_spec_claims.remove("exp");
 
-        let decoding_key = match jsonwebtoken::DecodingKey::from_rsa_pem(self.public_key.as_bytes())
-        {
-            Ok(key) => key,
-            Err(err) => {
-                self.verified = Some(false);
-                bail!(err)
-            }
-        };
+        let decoding_key =
+            match jsonwebtoken::DecodingKey::from_rsa_pem(self.public_key.trim().as_bytes()) {
+                Ok(key) => key,
+                Err(err) => {
+                    self.verified = Some(false);
+                    bail!(err)
+                }
+            };
 
         match jsonwebtoken::decode::<Map<_, _>>(&self.encoded, &decoding_key, &validation) {
             Ok(_) => {

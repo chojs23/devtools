@@ -5,7 +5,7 @@ use crate::{
     },
     // color::{ChromaticAdaptationMethod, ColorHarmony, Illuminant, PaletteFormat, RgbWorkingSpace},
     context::FrameCtx,
-    settings::{ColorDisplayFmtEnum, Settings},
+    settings::{ColorDisplayFmtEnum, Settings, BASE_DIR},
     ui::{DOUBLE_SPACE, HALF_SPACE, SPACE},
 };
 
@@ -104,13 +104,13 @@ impl SettingsWindow {
             .on_hover_cursor(CursorIcon::PointingHand)
             .clicked()
         {
-            if let Some(dir) = Settings::dir("d_tools") {
+            if let Some(dir) = Settings::dir(BASE_DIR) {
                 if !dir.exists() {
                     if let Err(e) = fs::create_dir_all(&dir) {
                         self.set_error(e);
                     }
                 }
-                let path = dir.join("config.yaml");
+                let path = dir.join(Settings::FILE_NAME);
                 if let Err(e) = app_ctx.settings.save(&path) {
                     self.set_error(e);
                 } else {

@@ -15,6 +15,7 @@ use crate::{
     ui::layout::HarmonyLayout,
 };
 
+pub const BASE_DIR: &str = "d_tools";
 pub const DEFAULT_PIXELS_PER_POINT: f32 = 1.0;
 
 pub fn load_global(_storage: Option<&dyn eframe::Storage>) -> Option<Settings> {
@@ -27,7 +28,7 @@ pub fn load_global(_storage: Option<&dyn eframe::Storage>) -> Option<Settings> {
         }
     }
     #[cfg(not(target_arch = "wasm32"))]
-    if let Some(config_dir) = Settings::dir("d_tools") {
+    if let Some(config_dir) = Settings::dir(BASE_DIR) {
         let path = config_dir.join(Settings::FILE_NAME);
 
         if let Ok(settings) = Settings::load(path) {
@@ -44,7 +45,7 @@ pub fn save_global(settings: &Settings, _storage: &mut dyn Storage) {
         _storage.set_string(Settings::STORAGE_KEY, yaml);
     }
     #[cfg(not(target_arch = "wasm32"))]
-    if let Some(dir) = Settings::dir("d_tools") {
+    if let Some(dir) = Settings::dir(BASE_DIR) {
         if !dir.exists() {
             let _ = std::fs::create_dir_all(&dir);
         }

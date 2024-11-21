@@ -12,7 +12,7 @@ use crate::{
     jwt::JwtEncoderDecoder,
     render::{TextureAllocator, TextureManager},
     screen_size::ScreenSize,
-    settings::{self, ColorDisplayFmtEnum, Settings},
+    settings::{self, ColorDisplayFmtEnum, Settings, BASE_DIR},
 };
 
 #[derive(Clone, Debug)]
@@ -157,7 +157,7 @@ impl AppCtx {
             }
 
             #[cfg(not(target_arch = "wasm32"))]
-            if let Some(path) = Palettes::dir("dev_tools") {
+            if let Some(path) = Palettes::dir(BASE_DIR) {
                 match Palettes::load(path.join(Palettes::FILE_NAME)) {
                     Ok(palettes) => self.palettes = palettes,
                     Err(e) => append_global_error(format!("failed to load palettes, {e:?}")),

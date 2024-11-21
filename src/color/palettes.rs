@@ -20,7 +20,7 @@ impl Default for Palettes {
 }
 
 impl Palettes {
-    pub const STORAGE_KEY: &'static str = "dev_tools.saved.palettes";
+    pub const STORAGE_KEY: &'static str = "d_tools.saved.palettes";
     pub const FILE_NAME: &'static str = "palettes.json";
 
     pub fn new(palette: NamedPalette) -> Self {
